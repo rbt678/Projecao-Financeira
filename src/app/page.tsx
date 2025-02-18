@@ -1,95 +1,51 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import { useCallback, useState } from "react";
+import Savings from "@/UI/savings";
+import Table, { TableDataItem } from "@/UI/table";
+import { useRouter } from 'next/navigation';
+
+const listaExemplo = [
+  { dia: 1, nome: "Nome A", valor: 100 },
+  { dia: 1, nome: "Nome B", valor: 200 },
+  { dia: 2, nome: "Nome C", valor: 300 },
+  { dia: 2, nome: "Nome D", valor: 400 },
+  { dia: 3, nome: "Nome E", valor: 500 },
+  { dia: 3, nome: "Nome F", valor: 600 },
+];
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [transactions, setTransactions] = useState<TableDataItem[]>(listaExemplo);
+  const [savings, setSavings] = useState<number>(2000);
+  const router = useRouter()
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  const handleUpdateData = useCallback((updatedData: TableDataItem[]) => {
+    setTransactions(updatedData);
+  }, []);
+
+  const handleUpdateSavings = useCallback((value: number) => {
+    setSavings(value);
+  }, []);
+
+  const calcular = useCallback(() => {
+    localStorage.setItem('dados', JSON.stringify({ transactions, savings }));
+    router.push("/projecao");
+  }, [transactions, savings]);
+
+  return (
+    <div>
+      <h1>Coloque as informações</h1>
+      <div className="flex flex-col sm:flex-row gap-4 max-h-[calc(100vh-150px)] overflow-auto">
+        <div>
+          <Table lista={transactions} updateData={handleUpdateData} />
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="flex flex-col gap-4">
+          <Savings guardado={savings} updateSavings={handleUpdateSavings} />
+        </div>
+      </div>
+      <div className="flex justify-center p-4">
+        <button className="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded cursor-pointer" onClick={calcular}>Calcular</button>
+      </div>
     </div>
   );
 }
