@@ -1,3 +1,5 @@
+// UI/table.tsx
+
 'use client'
 
 import { useCallback, useState } from 'react';
@@ -38,26 +40,24 @@ export default function Table({ lista = [], updateData }: { lista?: TableDataIte
     const [data, setData] = useState(lista);
 
     const handleInputChange = useCallback((index: number, name: string, value: number | string) => {
-        setData(prevData => {
-            const newData = [...prevData];
-            newData[index] = { ...newData[index], [name]: value };
-            updateData(newData);
-            return newData;
-        });
-    },[updateData]);
+        const prevData = [...data];
+        const newData = [...prevData];
+        newData[index] = { ...newData[index], [name]: value };
+        updateData(newData);
+        setData(newData);
+    },[updateData, data]);
 
     const handleDeleteItem = useCallback((index: number) => {
         setData(prevData => {
             const newData = [...prevData];
             newData[index].removing = true;
-    
             return [...newData];
         });
-    
+        updateData(data.filter((_, i) => i !== index));
         setTimeout(() => {
-            setData(prevData => prevData.filter((_, i) => i !== index)); 
+            setData(prevData => prevData.filter((_, i) => i !== index));
         }, 300);
-    }, []);
+    }, [updateData, data]);
 
     const newData = useCallback(() => {
         setData(prevData => {

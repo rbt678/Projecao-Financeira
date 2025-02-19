@@ -1,22 +1,18 @@
+// app/page.tsx
+
 'use client'
 
 import { useCallback, useState } from "react";
 import Savings from "@/UI/savings";
 import Table, { TableDataItem } from "@/UI/table";
 import { useRouter } from 'next/navigation';
+import { getData, saveData } from "@/lib/dataRequests";
 
-const listaExemplo = [
-  { dia: 1, nome: "Nome A", valor: 100 },
-  { dia: 1, nome: "Nome B", valor: 200 },
-  { dia: 2, nome: "Nome C", valor: 300 },
-  { dia: 2, nome: "Nome D", valor: 400 },
-  { dia: 3, nome: "Nome E", valor: 500 },
-  { dia: 3, nome: "Nome F", valor: 600 },
-];
 
 export default function Home() {
-  const [transactions, setTransactions] = useState<TableDataItem[]>(listaExemplo);
-  const [savings, setSavings] = useState<number>(2000);
+  const listaLocal = getData();
+  const [transactions, setTransactions] = useState<TableDataItem[]>(listaLocal.transactions);
+  const [savings, setSavings] = useState<number>(listaLocal.savings);
   const router = useRouter()
 
   const handleUpdateData = useCallback((updatedData: TableDataItem[]) => {
@@ -28,13 +24,12 @@ export default function Home() {
   }, []);
 
   const calcular = useCallback(() => {
-    localStorage.setItem('dados', JSON.stringify({ transactions, savings }));
+    saveData(transactions, savings);
     router.push("/projecao");
-  }, [transactions, savings]);
+  }, [transactions, savings, router]);
 
   return (
     <div>
-      <h1>Coloque as informações</h1>
       <div className="flex flex-col sm:flex-row gap-4 max-h-[calc(100vh-150px)] overflow-auto">
         <div>
           <Table lista={transactions} updateData={handleUpdateData} />
