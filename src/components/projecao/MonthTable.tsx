@@ -1,7 +1,29 @@
 // components/projecao/MonthTable.tsx
 
-import styles from './MonthTable.module.css'; // CSS Modules
 import { formatCurrency } from '@/lib/formatUtils';
+import { table } from 'console';
+
+const styles = {
+  tableContainer: "w-fit h-fit bg-gray-100 shadow-md rounded-lg overflow-auto p-3 pt-0 pb-1",
+  mes: "py-3 px-6 text-center text-lg font-extrabold text-gray-700 uppercase tracking-wider",
+  table: "border-separate border-spacing-y-2",
+  thead: "bg-gray-100",
+  tbody: "rounded-lg",
+  th: "py-3 px-6 text-center text-sm font-extrabold text-gray-700 uppercase tracking-wider",
+  td: "py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap",
+  tr: "group bg-gray-200 hover:bg-gray-50 transition duration-300",
+  trRemoving: "opacity-0 transition-opacity duration-300",
+  tdRoundedLeft: "rounded-l-lg",
+  tdRoundedRight: "rounded-r-lg",
+  tdContent: "flex justify-between items-center",
+  deleteButton: "scale-125 opacity-0 group-hover:opacity-100 transition duration-200 cursor-pointer hover:scale-150",
+  input: "text-center",
+  inputDay: "w-16",
+  inputName: "w-48",
+  inputValue: "w-24",
+  numberPositive: "text-green-500",
+  numberNegative: "text-red-500",
+}
 
 export interface TableDataItemTotal {
   dia: number;

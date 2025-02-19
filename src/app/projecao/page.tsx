@@ -1,5 +1,7 @@
 // app/projecao/page.tsx
 
+"use client";
+
 import { MonthTable } from "@/components/projecao/MonthTable";
 import { useProjecao } from "@/hooks/useProjecao";
 import { obterMesString } from "@/lib/dateUtils";

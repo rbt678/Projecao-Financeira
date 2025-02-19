@@ -1,4 +1,6 @@
-// hooks/useProjecao.ts
+// src/hooks/useProjecao.ts
+'use client'; // Adiciona a diretiva 'use client'
+
 // Hook personalizado para a lógica da página de projeção
 
 import { useState, useEffect, useCallback } from "react";

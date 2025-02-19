@@ -1,4 +1,5 @@
 // hooks/useTransactions.ts
+'use client'; // Adicionado 'use client'
 
 import { useState, useCallback, useEffect } from "react";
 import { getData, saveData } from "@/lib/storage";

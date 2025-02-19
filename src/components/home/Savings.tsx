@@ -1,8 +1,16 @@
 // components/home/Savings.tsx
 
 import { useState, useCallback } from "react";
-import styles from './Savings.module.css'; // CSS Modules
 import { formatCurrency } from "@/lib/formatUtils";
+
+const styles = {
+  container: "w-fit h-fit bg-gray-100 shadow-md rounded-lg overflow-auto p-3 pt-0 pb-1",
+  title: "py-3 px-6 text-center text-sm font-extrabold text-gray-700 uppercase tracking-wider",
+  numberPositive: "text-green-500",
+  numberNegative: "text-red-500",
+  input: "text-center w-24",
+  displayValue: "text-center mt-2",
+}
 
 interface SavingsProps {
   guardado?: number;
@@ -29,7 +37,7 @@ export default function Savings({ guardado = 0, updateSavings }: SavingsProps) {
         step="0.01"
         required
       />
-        <div className={styles.displayValue}>{formatCurrency(savings)}</div>
+      <div className={styles.displayValue}>{formatCurrency(savings)}</div>
     </div>
   );
 }
