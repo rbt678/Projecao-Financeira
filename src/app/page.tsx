@@ -2,7 +2,7 @@
 
 'use client'
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react"; // Importa useEffect
 import Savings from "@/components/home/Savings";
 import Table from "@/components/home/Table";
 import { useRouter } from 'next/navigation';
@@ -29,7 +29,7 @@ export default function Home() {
       <div className="flex flex-col sm:flex-row gap-4 max-h-[calc(100vh-150px)] overflow-auto p-4">
         <div>
           <Table
-            lista={transactions}
+            lista={transactions} // Passa os dados carregados como a prop 'lista'
             updateData={updateTransactions}  // Usa o hook
           />
         </div>

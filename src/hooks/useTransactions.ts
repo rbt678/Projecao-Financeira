@@ -1,5 +1,5 @@
 // hooks/useTransactions.ts
-'use client'; // Adicionado 'use client'
+'use client';
 
 import { useState, useCallback, useEffect } from "react";
 import { getData, saveData } from "@/lib/storage";
@@ -9,19 +9,22 @@ import { useImmer } from "use-immer";
 export function useTransactions() {
     const [transactions, setTransactions] = useImmer<TableDataItem[]>([]);
     const [savings, setSavings] = useState<number>(0);
-    const [isLoading, setIsLoading] = useState(false); // Carregando para salvar
-    const [error, setError] = useState<string | null>(null); // Armazena mensagens de erro
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // Inicializa os dados do localStorage
     useEffect(() => {
         try {
             const { transactions: storedTransactions, savings: storedSavings } = getData();
-            setTransactions(storedTransactions.map(item => ({ ...item, id: item.id || crypto.randomUUID() }))); // Garante ID
+            setTransactions(storedTransactions.map(item => ({ ...item, id: item.id || crypto.randomUUID() })));
             setSavings(storedSavings);
-        } catch (err: any) {
-            setError(err.message || "Erro ao carregar os dados."); // Define o erro
+        } catch (err: unknown) { // Mudança aqui: unknown
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Erro ao carregar os dados.");
+            }
         }
-    }, [setTransactions]);
+    }, [setTransactions, setSavings]);
 
 
     const updateTransactions = useCallback((updatedTransactions: TableDataItem[]) => {
@@ -35,15 +38,17 @@ export function useTransactions() {
 
     const saveTransactions = useCallback(async () => {
         setIsLoading(true);
-        setError(null); // Limpa erros anteriores
+        setError(null);
         try {
-            saveData(transactions, savings); // Salva
+            saveData(transactions, savings);
             return true;
 
-        } catch (err: any) {
-            setError(err.message || "Erro ao salvar os dados."); // Captura o erro do storage
-            return false;
-
+        } catch (err: unknown) { // Mudança aqui: unknown
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Erro ao salvar os dados.");
+            }
         } finally {
             setIsLoading(false);
         }

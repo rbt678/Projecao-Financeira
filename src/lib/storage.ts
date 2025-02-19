@@ -9,14 +9,18 @@ const STORAGE_KEY = "dados";
 export function saveData(data: TableDataItem[], savings: number): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ transactions: data, savings }));
-  } catch (error) {
+  } catch (error: unknown) { // Mudança aqui: unknown
+    let errorMessage = "Não foi possível salvar os dados. Verifique o espaço disponível ou tente novamente mais tarde.";
+        if(error instanceof Error) {
+            errorMessage = error.message;
+        }
     console.error("Erro ao salvar dados no localStorage:", error);
-    throw new Error("Não foi possível salvar os dados. Verifique o espaço disponível ou tente novamente mais tarde."); // Lança um erro específico
+    throw new Error(errorMessage);  // Lança um erro específico
   }
 }
 
 export function getData(): { transactions: TableDataItem[]; savings: number } {
-  if (typeof window === "undefined") { // Proteção para SSR
+  if (typeof window === "undefined") {
     return { transactions: [], savings: 0 };
   }
 
@@ -24,19 +28,26 @@ export function getData(): { transactions: TableDataItem[]; savings: number } {
     const data = localStorage.getItem(STORAGE_KEY);
     if (data) {
       const parsedData = JSON.parse(data);
+      // Ordena as transações por dia (crescente)
+      const sortedTransactions = (parsedData.transactions || []).sort(
+        (a: TableDataItem, b: TableDataItem) => a.dia - b.dia
+      );
       return {
-        transactions: parsedData.transactions || [],
+        transactions: sortedTransactions,
         savings: parsedData.savings || 0,
       };
     }
     return { transactions: [], savings: 0 };
-  } catch (error) {
+  } catch (error: unknown) {
+    let errorMessage = "Não foi possível carregar os dados. Tente novamente.";
+        if(error instanceof Error){
+            errorMessage = error.message
+        }
     console.error("Erro ao ler dados do localStorage:", error);
-    throw new Error("Não foi possível carregar os dados. Tente novamente."); // Lança um erro
+    throw new Error(errorMessage);
   }
 }
 
-// Funções específicas para a projeção (poderiam estar em um arquivo separado se desejado)
 export function getDataMonths(): { savings: number; recalculatedMonths: TableDataItemTotal[][] } {
     const { transactions, savings } = getData();
 
@@ -57,13 +68,12 @@ export function getDataMonths(): { savings: number; recalculatedMonths: TableDat
     return { savings, recalculatedMonths };
 }
 
-// Refatoração das funções de recálculo
 function recalcFromMonth(
   monthIndex: number,
   months: TableDataItemTotal[][],
   startingValue: number
 ): TableDataItemTotal[][] {
-  const newMonths = structuredClone(months); // Cria uma cópia profunda, melhor que spread operator para objetos aninhados
+  const newMonths = structuredClone(months);
   let start = startingValue;
 
   for (let m = monthIndex; m < newMonths.length; m++) {
@@ -84,12 +94,15 @@ function recalcMonthFromTransactions(
   });
 }
 
-// Função auxiliar para limpar localStorage (útil para desenvolvimento/testes)
 export function clearData() {
   try {
       localStorage.removeItem(STORAGE_KEY);
-  } catch(error) {
+  } catch(error: unknown) { // Mudança aqui: unknown
+        let errorMessage = "Erro ao limpar dados.";
+        if(error instanceof Error){
+            errorMessage = error.message;
+        }
       console.error("Erro ao limpar localStorage:", error);
-      throw new Error("Erro ao limpar dados.");
+      throw new Error(errorMessage);
   }
 }

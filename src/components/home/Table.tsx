@@ -1,7 +1,7 @@
 // components/home/Table.tsx
 
-import { useCallback } from 'react';
-import { useImmer } from 'use-immer'; // Para imutabilidade
+import { useCallback, useEffect } from 'react'; // Importa useEffect
+import { useImmer } from 'use-immer';
 import { formatCurrency } from '@/lib/formatUtils';
 
 const styles = {
@@ -29,14 +29,12 @@ const styles = {
   aviso: "text-center text-gray-500 text-lg",
 }
 
-
 export interface TableDataItem {
   dia: number;
   nome: string;
   valor: number;
-  id: string; // Adiciona um ID único
+  id: string;
   removing?: boolean;
-  isNew?: boolean;
 }
 
 interface TableProps {
@@ -45,7 +43,12 @@ interface TableProps {
 }
 
 export default function Table({ lista = [], updateData }: TableProps) {
-    const [data, setData] = useImmer<TableDataItem[]>(lista.map(item => ({...item, id: item.id || crypto.randomUUID() }))); // Adiciona ID se não existir
+    const [data, setData] = useImmer<TableDataItem[]>([]); // Inicializa com array vazio
+
+    // Usa useEffect para sincronizar o estado interno com a prop 'lista'
+    useEffect(() => {
+        setData(lista.map(item => ({ ...item, id: item.id || crypto.randomUUID() })));
+    }, [lista, setData]); // Depende de 'lista'
 
 
   const handleInputChange = useCallback((id: string, field: keyof TableDataItem, value: string | number) => {
@@ -55,8 +58,15 @@ export default function Table({ lista = [], updateData }: TableProps) {
         draft[index][field] = value;
       }
     });
-    updateData(data); //Isso talvez possa ser removido já que useImmer atualiza o valor, mas deixei aqui por via das dúvidas
-  }, [setData, updateData, data]);
+    // Atualiza o estado externo *imediatamente* após a modificação.  Importante:  Usa um map para criar um novo array.
+    updateData(data.map(item => {
+        if(item.id === id){
+            return {...item, [field]: value}
+        }
+        return item;
+    }));
+  }, [setData, updateData, data]); // Mantém 'data' como dependência aqui
+
 
   const handleDeleteItem = useCallback((id: string) => {
       setData(draft => {
@@ -73,24 +83,18 @@ export default function Table({ lista = [], updateData }: TableProps) {
               draft.splice(index, 1); // Remove de fato
             }
         });
-        updateData(data.filter(item => item.id !== id));
+        updateData(data.filter(item => item.id !== id)); // Atualiza *após* a remoção, com o setTimeout
     }, 300); // Mantém o timeout para a animação
   }, [setData, updateData, data]);
 
   const addNewItem = useCallback(() => {
-      setData(draft => {
-          draft.push({ dia: 1, nome: '', valor: 0, id: crypto.randomUUID(), isNew: true });
-      });
+    // Usa setData (com useImmer) para adicionar o novo item
+    setData(draft => {
+        draft.push({ dia: 1, nome: '', valor: 0, id: crypto.randomUUID() });
+    });
+    updateData([...data, { dia: 1, nome: '', valor: 0, id: crypto.randomUUID() }]);
 
-      setTimeout(() => {
-          setData(draft => {
-            const lastIndex = draft.length -1;
-            if(draft[lastIndex]){
-                draft[lastIndex].isNew = false;
-            }
-          })
-      }, 10);
-  }, [setData]);
+  }, [setData, updateData, data]); //setData é a dependência aqui
 
 
   return (
@@ -105,7 +109,7 @@ export default function Table({ lista = [], updateData }: TableProps) {
         </thead>
         <tbody className={styles.tbody}>
           {data.map((item) => (
-            <tr className={`${styles.tr} ${item.removing ? styles.trRemoving : ''} ${item.isNew && !item.removing ? styles.trAdding : ''}`} key={item.id}>
+            <tr className={`${styles.tr} ${item.removing ? styles.trRemoving : ''}`} key={item.id}>
               <td className={`${styles.td} ${styles.tdRoundedLeft}`}>
                 <input
                   className={`${styles.input} ${styles.inputDay}`}

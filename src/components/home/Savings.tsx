@@ -1,6 +1,6 @@
 // components/home/Savings.tsx
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react"; // Importa useEffect
 import { formatCurrency } from "@/lib/formatUtils";
 
 const styles = {
@@ -18,7 +18,12 @@ interface SavingsProps {
 }
 
 export default function Savings({ guardado = 0, updateSavings }: SavingsProps) {
-  const [savings, setSavings] = useState(guardado);
+  const [savings, setSavings] = useState(guardado); // Inicializa com o valor da prop
+
+  // Usa useEffect para sincronizar o estado interno com a prop 'guardado'
+  useEffect(() => {
+    setSavings(guardado);
+  }, [guardado]); // Depende de 'guardado'
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
@@ -37,7 +42,7 @@ export default function Savings({ guardado = 0, updateSavings }: SavingsProps) {
         step="0.01"
         required
       />
-      <div className={styles.displayValue}>{formatCurrency(savings)}</div>
+        <div className={styles.displayValue}>{formatCurrency(savings)}</div>
     </div>
   );
 }
