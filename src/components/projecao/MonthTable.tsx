@@ -1,7 +1,6 @@
 // components/projecao/MonthTable.tsx
 
 import { formatCurrency } from '@/lib/formatUtils';
-import { table } from 'console';
 
 const styles = {
   tableContainer: "w-fit h-fit bg-gray-100 shadow-md rounded-lg overflow-auto p-3 pt-0 pb-1",
@@ -106,7 +105,7 @@ export function MonthTable({ month, monthIndex, monthName, onInputChange, onDele
                 </div>
               </td>
               <td className={`${styles.td} ${styles.tdRoundedRight}`}>
-                <div className={styles.tdContent}>
+                <div className={`${styles.tdContent} ${item.total >= 0 ? styles.numberPositive : styles.numberNegative}`}>
                     {formatCurrency(item.total)}
                 </div>
               </td>

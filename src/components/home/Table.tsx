@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect } from 'react'; // Importa useEffect
 import { useImmer } from 'use-immer';
-import { formatCurrency } from '@/lib/formatUtils';
 
 const styles = {
   th: "py-3 px-6 text-center text-sm font-extrabold text-gray-700 uppercase tracking-wider",
@@ -43,36 +42,41 @@ interface TableProps {
 }
 
 export default function Table({ lista = [], updateData }: TableProps) {
-    const [data, setData] = useImmer<TableDataItem[]>([]); // Inicializa com array vazio
+    const [data, setData] = useImmer<TableDataItem[]>([]);
 
-    // Usa useEffect para sincronizar o estado interno com a prop 'lista'
     useEffect(() => {
         setData(lista.map(item => ({ ...item, id: item.id || crypto.randomUUID() })));
-    }, [lista, setData]); // Depende de 'lista'
+    }, [lista, setData]);
 
 
   const handleInputChange = useCallback((id: string, field: keyof TableDataItem, value: string | number) => {
     setData(draft => {
       const index = draft.findIndex(item => item.id === id);
       if (index !== -1) {
-        draft[index][field] = value;
+        // Verificações de tipo e conversões explícitas
+        if (field === 'dia' || field === 'valor') {
+          draft[index][field] = Number(value); // Garante que seja um número
+        } else if (field === 'nome') {
+          draft[index][field] = String(value); // Garante que seja uma string
+        }
+        // Outros campos (removing, id) não são modificados aqui
       }
     });
-    // Atualiza o estado externo *imediatamente* após a modificação.  Importante:  Usa um map para criar um novo array.
+
     updateData(data.map(item => {
         if(item.id === id){
             return {...item, [field]: value}
         }
         return item;
     }));
-  }, [setData, updateData, data]); // Mantém 'data' como dependência aqui
+  }, [setData, updateData, data]);
 
 
   const handleDeleteItem = useCallback((id: string) => {
       setData(draft => {
         const index = draft.findIndex(item => item.id === id);
         if(index !== -1) {
-            draft[index].removing = true; // Marca para remoção
+            draft[index].removing = true;
         }
       });
 
@@ -80,21 +84,20 @@ export default function Table({ lista = [], updateData }: TableProps) {
         setData(draft => {
             const index = draft.findIndex(item => item.id === id);
             if (index !== -1) {
-              draft.splice(index, 1); // Remove de fato
+              draft.splice(index, 1);
             }
         });
-        updateData(data.filter(item => item.id !== id)); // Atualiza *após* a remoção, com o setTimeout
-    }, 300); // Mantém o timeout para a animação
+        updateData(data.filter(item => item.id !== id));
+    }, 300);
   }, [setData, updateData, data]);
 
   const addNewItem = useCallback(() => {
-    // Usa setData (com useImmer) para adicionar o novo item
     setData(draft => {
         draft.push({ dia: 1, nome: '', valor: 0, id: crypto.randomUUID() });
     });
     updateData([...data, { dia: 1, nome: '', valor: 0, id: crypto.randomUUID() }]);
 
-  }, [setData, updateData, data]); //setData é a dependência aqui
+  }, [setData, updateData, data]);
 
 
   return (

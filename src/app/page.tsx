@@ -2,7 +2,7 @@
 
 'use client'
 
-import { useCallback, useEffect } from "react"; // Importa useEffect
+import { useCallback } from "react";
 import Savings from "@/components/home/Savings";
 import Table from "@/components/home/Table";
 import { useRouter } from 'next/navigation';

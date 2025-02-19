@@ -9,7 +9,7 @@ import LoadingSpinner from "@/components/shared/LoadingSpinner"; // Componente d
 import ErrorMessage from "@/components/shared/ErrorMessage";   // Componente de mensagem de erro genérico
 
 export default function Projecao() {
-  const { transactionsMonths, savings, isLoading, error, handleInputChange, handleDeleteItem } = useProjecao();
+  const { transactionsMonths, isLoading, error, handleInputChange, handleDeleteItem } = useProjecao();
 
   if (isLoading) {
     return <LoadingSpinner />;
