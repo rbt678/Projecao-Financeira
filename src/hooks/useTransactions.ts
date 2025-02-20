@@ -5,6 +5,7 @@ import { useState, useCallback, useEffect } from "react";
 import { getData, saveData } from "@/lib/storage";
 import { TableDataItem } from "@/components/home/Table";
 import { useImmer } from "use-immer";
+import { generateUUID } from "@/lib/uuid-fallback";
 
 export function useTransactions() {
     const [transactions, setTransactions] = useImmer<TableDataItem[]>([]);
@@ -15,7 +16,7 @@ export function useTransactions() {
     useEffect(() => {
         try {
             const { transactions: storedTransactions, savings: storedSavings } = getData();
-            setTransactions(storedTransactions.map(item => ({ ...item, id: item.id || crypto.randomUUID() })));
+            setTransactions(storedTransactions.map(item => ({ ...item, id: item.id || generateUUID() })));
             setSavings(storedSavings);
         } catch (err: unknown) { // Mudança aqui: unknown
             if (err instanceof Error) {

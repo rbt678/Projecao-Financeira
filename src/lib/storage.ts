@@ -3,6 +3,7 @@
 
 import { TableDataItem } from "@/components/home/Table";
 import { TableDataItemTotal } from "@/components/projecao/MonthTable";
+import { generateUUID } from "./uuid-fallback";
 
 const STORAGE_KEY = "dados";
 
@@ -57,7 +58,7 @@ export function getDataMonths(): { savings: number; recalculatedMonths: TableDat
   const initialTransactions: TableDataItemTotal[] = transactions.map((item) => ({
     ...item,
     total: 0,
-    id: item.id || crypto.randomUUID(), // Garante que tenha ID
+    id: item.id || generateUUID(), // Garante que tenha ID
   }));
 
     const months: TableDataItemTotal[][] = Array.from({ length: 12 }, () =>

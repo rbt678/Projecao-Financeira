@@ -1,5 +1,6 @@
 // components/home/Table.tsx
 
+import { generateUUID } from '@/lib/uuid-fallback';
 import { useCallback, useEffect } from 'react'; // Importa useEffect
 import { useImmer } from 'use-immer';
 
@@ -45,7 +46,7 @@ export default function Table({ lista = [], updateData }: TableProps) {
     const [data, setData] = useImmer<TableDataItem[]>([]);
 
     useEffect(() => {
-        setData(lista.map(item => ({ ...item, id: item.id || crypto.randomUUID() })));
+        setData(lista.map(item => ({ ...item, id: item.id || generateUUID() })));
     }, [lista, setData]);
 
 
@@ -93,11 +94,10 @@ export default function Table({ lista = [], updateData }: TableProps) {
 
   const addNewItem = useCallback(() => {
     setData(draft => {
-        draft.push({ dia: 1, nome: '', valor: 0, id: crypto.randomUUID() });
+        draft.push({ dia: 1, nome: '', valor: 0, id: generateUUID() }); // Use generateUUID()
     });
-    updateData([...data, { dia: 1, nome: '', valor: 0, id: crypto.randomUUID() }]);
-
-  }, [setData, updateData, data]);
+    updateData([...data, { dia: 1, nome: '', valor: 0, id: generateUUID() }]); // Use generateUUID()
+}, [setData, updateData, data]);
 
 
   return (
