@@ -1,32 +1,32 @@
 // components/home/Table.tsx
 
 import { generateUUID } from '@/lib/uuid-fallback';
-import { useCallback, useEffect } from 'react'; // Importa useEffect
+import { useCallback, useEffect } from 'react';
 import { useImmer } from 'use-immer';
 
 const styles = {
-  th: "py-3 px-6 text-center text-sm font-extrabold text-gray-700 uppercase tracking-wider",
-  td: "py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap",
+  th: "py-3 text-center text-sm font-extrabold text-gray-700 uppercase tracking-wider",
+  td: "py-4 text-sm font-medium text-gray-900 whitespace-normal",
   tr: "group bg-gray-200 hover:bg-gray-50 transition duration-150 transition-opacity duration-300",
   trRemoving: "opacity-0 transition-opacity duration-300",
   trAdding: "opacity-0",
-  tableContainer: "w-fit h-fit bg-gray-100 shadow-md rounded-lg overflow-auto p-3 pt-0 pb-1",
-  table: "border-separate border-spacing-y-2",
+  tableContainer: "bg-gray-100 shadow-md rounded-lg overflow-auto p-3 pt-0 pb-1 w-full",
+  table: "border-separate border-spacing-y-2 min-w-full",
   thead: "bg-gray-100",
   tbody: "rounded-lg",
   tdRoundedLeft: "rounded-l-lg",
   tdRoundedRight: "rounded-r-lg",
-  tdContent: "flex justify-between",
-  deleteButton: "scale-125 opacity-0 group-hover:opacity-100 transition duration-200 cursor-pointer hover:scale-150",
+  tdContent: "flex justify-between items-center",
+  deleteButton: "scale-125 opacity-0 group-hover:opacity-100 transition duration-200 cursor-pointer hover:scale-150 flex-shrink-0 ml-2",
   input: "text-center",
   inputDay: "w-16",
-  inputName: "w-48",
+  inputName: "w-full min-w-[100px]",
   inputValue: "w-24",
   numberPositive: "text-green-500",
   numberNegative: "text-red-500",
-  buttonContainer: "flex justify-center",
+  buttonContainer: "flex justify-center mt-2",
   button: "cursor-pointer transition-transform hover:scale-125",
-  aviso: "text-center text-gray-500 text-lg",
+  aviso: "text-center text-gray-500 text-lg py-4",
 }
 
 export interface TableDataItem {
@@ -105,9 +105,9 @@ export default function Table({ lista = [], updateData }: TableProps) {
       <table className={styles.table}>
         <thead className={styles.thead}>
           <tr>
-            <th className={styles.th}>Dia</th>
-            <th className={styles.th}>Nome</th>
-            <th className={styles.th}>Valor</th>
+            <th className={`${styles.th} w-20`}>Dia</th>
+            <th className={`${styles.th} w-full`}>Nome</th>
+            <th className={`${styles.th} w-32`}>Valor</th>
           </tr>
         </thead>
         <tbody className={styles.tbody}>
@@ -123,7 +123,7 @@ export default function Table({ lista = [], updateData }: TableProps) {
                   onChange={(e) => handleInputChange(item.id, 'dia', Number(e.target.value))}
                 />
               </td>
-              <td className={styles.td}>
+              <td className={`${styles.td} flex-grow`}>
                 <input
                   className={`${styles.input} ${styles.inputName}`}
                   type="text"

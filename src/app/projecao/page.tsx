@@ -24,7 +24,7 @@ export default function Projecao() {
   }
 
   return (
-    <div className="flex flex-col gap-4 items-center overflow-auto p-4">
+    <div className="flex flex-1 flex-col gap-4 items-center overflow-auto p-4 justify-center">
       {transactionsMonths.map((month, monthIndex) => (
         <MonthTable
           key={monthIndex}

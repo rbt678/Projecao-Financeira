@@ -26,14 +26,14 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row gap-4 max-h-[calc(100vh-150px)] overflow-auto p-4">
+      <div className="flex flex-wrap gap-4">
         <div>
           <Table
             lista={transactions} // Passa os dados carregados como a prop 'lista'
             updateData={updateTransactions}  // Usa o hook
           />
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="">
           <Savings guardado={savings} updateSavings={updateSavings} /> {/* Usa o hook */}
         </div>
       </div>
