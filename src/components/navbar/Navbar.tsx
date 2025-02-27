@@ -24,7 +24,7 @@ export default function Navbar() {
   }
   
   const nav = (
-    <nav className={`min-w-fit bg-gray-900 text-white ${isMobile ? "transform ease-in-out duration-300 fixed top-16 right-0 h-full":""} ${isOpen ? "translate-x-0" : isMobile && "translate-x-full"} `}>
+    <nav className={`z-100 min-w-fit bg-gray-900 text-white ${isMobile ? "transform ease-in-out duration-300 fixed top-16 right-0 h-full":""} ${isOpen ? "translate-x-0" : isMobile && "translate-x-full"} `}>
       <ul className={"flex flex-col gap-2 p-4"}>
         <li className={""}>
           <Links href="/" name="Home" />
