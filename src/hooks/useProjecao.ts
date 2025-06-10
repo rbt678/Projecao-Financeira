@@ -51,8 +51,10 @@ export function useProjecao() {
         if (transactionIndex === -1) return;
 
         // Type assertion:  Afirma que o valor é do tipo correto para aquele campo
-        if (field === 'dia' || field === 'valor' || field === 'total') {
+        if (field === 'dia' || field === 'total') {
             month[transactionIndex][field] = Number(value); // Força a conversão para Number
+        } else if (field === 'valor') {
+            month[transactionIndex][field] = value;
         } else if (field === 'nome') {
             month[transactionIndex][field] = String(value); // Força para string se for 'nome'
         }

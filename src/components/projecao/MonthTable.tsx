@@ -31,7 +31,7 @@ const styles = {
 export interface TableDataItemTotal {
   dia: number;
   nome: string;
-  valor: number;
+  valor: number | string;
   total: number;
   id: string; // Add ID
   removing?: boolean;
@@ -97,7 +97,7 @@ export function MonthTable({
               <td className={styles.td}>
                 <div className={styles.tdContent}>
                   <input
-                    className={`${styles.input} ${styles.inputValue} ${item.valor >= 0
+                    className={`${styles.input} ${styles.inputValue} ${Number(item.valor) >= 0
                         ? styles.numberPositive
                         : styles.numberNegative
                       }`}
@@ -105,7 +105,7 @@ export function MonthTable({
                     step={0.01}
                     value={item.valor}
                     onChange={(e) =>
-                      onInputChange(monthIndex, item.id, "valor", Number(e.target.value))
+                      onInputChange(monthIndex, item.id, "valor", e.target.value)
                     }
                   />
                   <button

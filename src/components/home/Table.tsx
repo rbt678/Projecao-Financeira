@@ -120,7 +120,7 @@ export default function Table({ lista = [], updateData }: TableProps) {
                   min={1}
                   max={31}
                   value={item.dia}
-                  onChange={(e) => handleInputChange(item.id, 'dia', Number(e.target.value))}
+                  onChange={(e) => handleInputChange(item.id, 'dia', e.target.value)}
                 />
               </td>
               <td className={`${styles.td} flex-grow`}>
@@ -138,7 +138,7 @@ export default function Table({ lista = [], updateData }: TableProps) {
                     type="number"
                     step="0.01"
                     value={item.valor}
-                    onChange={(e) => handleInputChange(item.id, 'valor', Number(e.target.value))}
+                    onChange={(e) => handleInputChange(item.id, 'valor', e.target.value)}
                   />
                   <button className={styles.deleteButton} onClick={() => handleDeleteItem(item.id)}>🗑️</button>
                 </div>

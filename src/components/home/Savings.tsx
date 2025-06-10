@@ -13,7 +13,7 @@ const styles = {
 }
 
 interface SavingsProps {
-  guardado?: number;
+  guardado?: number | string; // Permite que 'guardado' seja um número ou uma string
   updateSavings: (value: number) => void;
 }
 
@@ -26,23 +26,23 @@ export default function Savings({ guardado = 0, updateSavings }: SavingsProps) {
   }, [guardado]); // Depende de 'guardado'
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value);
+    const value = event.target.value;
     setSavings(value);
-    updateSavings(value);
+    updateSavings(Number(value));
   }, [updateSavings]);
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Valor guardado</h1>
       <input
-        className={`${styles.input} ${savings >= 0 ? styles.numberPositive : styles.numberNegative}`}
+        className={`${styles.input} ${Number(savings) >= 0 ? styles.numberPositive : styles.numberNegative}`}
         type="number"
         value={savings}
         onChange={handleInputChange}
         step="0.01"
         required
       />
-        <div className={styles.displayValue}>{formatCurrency(savings)}</div>
+        <div className={styles.displayValue}>{formatCurrency(Number(savings))}</div>
     </div>
   );
 }
